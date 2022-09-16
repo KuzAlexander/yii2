@@ -1,0 +1,11 @@
+{
+    "require": {
+        "yiisoft/yii2": "*",
+        "yidas/yii2-bower-asset": "2.0.13.1"
+    },
+    "config": {
+        "allow-plugins": {
+            "yiisoft/yii2-composer": true
+        }
+    }
+}

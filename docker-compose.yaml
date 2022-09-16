@@ -1,0 +1,35 @@
+version: '3.5'
+volumes:
+  mysql_volume:
+networks:
+  losst-network:
+services:
+  nginx:
+    image: nginx
+    ports:
+      - '8094:80'
+    volumes:
+      - ./:/var/www/html/
+      - ./nginx:/etc/nginx/conf.d
+    networks:
+      - losst-network
+  db:
+    image: mariadb
+    volumes:
+      - mysql_volume:/var/lib/mysql
+    ports:
+      - '33061:3306'
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=database
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=password
+    networks:
+      - losst-network
+  php-fpm:
+    build:
+      context: ./php-fpm
+    volumes:
+      - ./:/var/www/html/
+    networks:
+      - losst-network
