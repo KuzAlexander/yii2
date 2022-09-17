@@ -9,7 +9,7 @@ services:
     ports:
       - '8094:80'
     volumes:
-      - ./:/var/www/html/
+      - ./:/app/
       - ./nginx:/etc/nginx/conf.d
     networks:
       - losst-network
@@ -30,6 +30,6 @@ services:
     build:
       context: ./php-fpm
     volumes:
-      - ./:/var/www/html/
+      - ./:/app/
     networks:
       - losst-network
