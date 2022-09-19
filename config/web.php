@@ -7,5 +7,9 @@ return [
             'cookieValidationKey' => '4r5adsfkj32nwewerkjqw346534erjfewlf',
         ],
         'db' => require(__DIR__ . '/db.php'),
+        'urlManager' => [
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
+        ]
     ]
 ];

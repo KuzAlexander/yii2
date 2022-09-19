@@ -6,7 +6,8 @@ use app\models\product\Product;
 use app\models\product\ProductRecord;
 use app\models\product\Provider;
 use app\models\product\ProviderRecord;
-use yii\base\Controller;
+use yii\web\Controller;
+use yii\data\ArrayDataProvider;
 
 class ProductController extends Controller
 {
@@ -14,6 +15,63 @@ class ProductController extends Controller
     {
         $records = $this->findRecordsByQuery();
         return $this->render('index', compact('records'));
+    }
+
+    public function actionAdd()
+    {
+        $product = new ProductRecord();
+        $provider = new ProviderRecord();
+
+        if ($this->load($product, $provider, $_POST)) {
+            $this->store($this->makeProduct($product, $provider));
+            return $this->redirect('/product');
+        }
+
+        return $this->render('add', compact('product', 'provider'));
+    }
+
+    public function actionQuery()
+    {
+        return $this->render('query');
+    }
+
+    private function findRecordsByQuery()
+    {
+        $name = \Yii::$app->request->get('provider_name');
+        $records = $this->getRecordsByProviderName($name);
+        $dataProvider = $this->wrapIntoDataProvider($records);
+        return $dataProvider;
+    }
+
+    private function wrapIntoDataProvider($data)
+    {
+        return new ArrayDataProvider([
+            'allModels' => $data,
+            'pagination' => false // отключаем разбивку на страницы
+        ]);
+    }
+
+    private function getRecordsByProviderName($name)
+    {
+        $provider_record = ProviderRecord::findOne(['name' => $name]);
+        if (!$provider_record) {
+            return [];
+        }
+
+        $product_record = ProductRecord::findOne($provider_record->id_product);
+        if (!$product_record) {
+            return [];
+        }
+
+        return [$this->makeProduct($product_record, $provider_record)];
+    }
+
+    private function load(ProductRecord $product, ProviderRecord $provider, array $post)
+    {
+        return $product->load($post)
+            and $provider->load($post)
+            and $product->validate()
+            and $provider->validate(['name']);
     }
 
     private function store(Product $product)

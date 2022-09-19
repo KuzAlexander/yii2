@@ -12,7 +12,18 @@ class m220917_114129_init_provider_table extends Migration
      */
     public function safeUp()
     {
+        $this->createTable(
+            'provider',
+            [
+                'id' => 'pk',
+                'id_product' => 'int unique',
+                'name' => 'string',
+            ],
+            'ENGINE=InnoDB'
+        );
 
+        $this->addForeignKey('product_provider', 'provider',
+            'id_product', 'product', 'id');
     }
 
     /**
@@ -20,23 +31,7 @@ class m220917_114129_init_provider_table extends Migration
      */
     public function safeDown()
     {
-        echo "m220917_114129_init_provider_table cannot be reverted.\n";
-
-        return false;
+        $this->dropForeignKey('product_provider', 'provider');
+        $this->dropTable('provider');
     }
-
-    /*
-    // Use up()/down() to run migration code without a transaction.
-    public function up()
-    {
-
-    }
-
-    public function down()
-    {
-        echo "m220917_114129_init_provider_table cannot be reverted.\n";
-
-        return false;
-    }
-    */
 }
